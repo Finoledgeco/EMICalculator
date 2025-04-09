@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator</title>
+    <style>
+       * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #001777;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .calculator {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h2 {
+            color: #001777;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+
+        }
+        
+        .description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        input::placeholder {
+            color: #999;
+            opacity: 1;
+        }
+        
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .option {
+            padding: 10px 15px;
+            background-color: #f1f1f1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .range-slider {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .result-container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .reset-btn {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .about-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>EMI CALCULATOR</h2>
+        <p class="description">Plan your loans with confidence using the <b>Finoledge EMI Calculator</b>—a simple yet powerful tool to estimate your Equated Monthly Installments (EMIs) in seconds. Just enter your loan amount, interest rate, and tenure to get an instant breakdown of your monthly payments, total interest, and repayment schedule.
+
+Perfect for home loans, car loans, or personal financing, this calculator helps you budget smarter and make informed borrowing decisions.</p>
+<div class="input-group">
+    <label for="loan-amount">Loan Amount (₹)</label>
+    <div class="input-container">
+        <input type="number" id="loan-amount" placeholder="Enter loan amount" oninput="updateSlider(this.value, 'loan-amount-slider'); calculateEMI()">
+        <input type="range" id="loan-amount-slider" min="1000" max="50000000" step="10000" value="100000" class="range-slider" oninput="updateAmount(this.value, 'loan-amount'); calculateEMI()">
+    </div>
+</div>
+        
+        <div class="input-group">
+            <label for="interest-rate">Rate of interest % (p.a):</label>
+            <input type="number" id="interest-rate" placeholder="Enter interest rate" step="0.1" oninput="calculateEMI()">
+        </div>
+        
+        <div class="input-group">
+            <label for="loan-tenure">Loan Tenure (Years)</label>
+            <input type="number" id="loan-tenure" placeholder="Enter tenure" min="1" max="30" oninput="calculateEMI()">
+        </div>
+        
+        <div class="result-container">
+            <div class="result-item">
+                <span class="result-label">Monthly EMI</span>
+                <span class="result-value emi-highlight" id="monthly-emi">₹0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Principal amount</span>
+                <span class="result-value" id="principal-amount">₹0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total interest</span>
+                <span class="result-value" id="total-interest">₹0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total amount</span>
+                <span class="result-value" id="total-amount">₹0</span>
+            </div>
+        </div>
+        <div class="about-section">
+            Finoledge EMI Calculator
+        </div>
+    </div>
+
+    <script>
+function updateAmount(value, elementId) {
+    document.getElementById(elementId).value = formatNumberInput(value);
+    calculateEMI();
+}
+
+function updateSlider(value, sliderId) {
+    const slider = document.getElementById(sliderId);
+    const numValue = parseNumberInput(value);
+    
+    if (isNaN(numValue)) return;
+    
+    if (numValue < slider.min) {
+        slider.value = slider.min;
+        document.getElementById(sliderId.replace('-slider', '')).value = formatNumberInput(slider.min);
+    } else if (numValue > slider.max) {
+        slider.value = slider.max;
+        document.getElementById(sliderId.replace('-slider', '')).value = formatNumberInput(slider.max);
+    } else {
+        slider.value = numValue;
+    }
+    
+    calculateEMI();
+}
+        
+        function calculateEMI() {
+            const principal = parseNumberInput(document.getElementById('loan-amount').value);
+            const rate = parseNumberInput(document.getElementById('interest-rate').value);
+            const years = parseNumberInput(document.getElementById('loan-tenure').value);
+            
+            if (isNaN(principal) || isNaN(rate) || isNaN(years)) return;
+            
+            // Convert annual rate to monthly and years to months
+            const monthlyRate = rate / 12 / 100;
+            const months = years * 12;
+            
+            // EMI formula: [P x R x (1+R)^N]/[(1+R)^N-1]
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / 
+                       (Math.pow(1 + monthlyRate, months) - 1);
+            
+            const totalAmount = emi * months;
+            const totalInterest = totalAmount - principal;
+            
+            // Update results
+            document.getElementById('monthly-emi').textContent = '₹' + formatNumberOutput(emi);
+            document.getElementById('principal-amount').textContent = '₹' + formatNumberOutput(principal);
+            document.getElementById('total-interest').textContent = '₹' + formatNumberOutput(totalInterest);
+            document.getElementById('total-amount').textContent = '₹' + formatNumberOutput(totalAmount);
+        }
+        
+        function formatNumberInput(num) {
+            return num.toString().replace(/\D/g, '');
+        }
+        
+        function parseNumberInput(num) {
+            return parseFloat(num.toString().replace(/,/g, ''));
+        }
+        
+        function formatNumberOutput(num) {
+            return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Initialize calculator
+        window.onload = function() {
+            calculateEMI();
+        };
+    </script>
+</body>
+</html>
