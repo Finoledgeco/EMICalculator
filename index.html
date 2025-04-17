@@ -194,7 +194,7 @@ Perfect for home loans, car loans, or personal financing, this calculator helps 
     <label for="loan-amount">Loan Amount (₹)</label>
     <div class="input-container">
         <input type="number" id="loan-amount" placeholder="Enter loan amount" oninput="updateSlider(this.value, 'loan-amount-slider'); calculateEMI()">
-        <input type="range" id="loan-amount-slider" min="1000" max="50000000" step="10000" value="100000" class="range-slider" oninput="updateAmount(this.value, 'loan-amount'); calculateEMI()">
+        <input type="range" id="loan-amount-slider" min="0" max="50000000" step="10000" value="100000" class="range-slider" oninput="updateAmount(this.value, 'loan-amount'); calculateEMI()">
     </div>
 </div>
         
